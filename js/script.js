@@ -3,6 +3,13 @@ const totalCost = "<p class='totalCost'>Total: $0</p>";
 let lengthCheckedOld = 0;
 $("#name").focus();
 $("#other-title").hide();
+$("#title").change((e) => {
+    if(e.target.value === "other"){
+        $("#other-title").show();
+    } else {
+        $("#other-title").hide();
+    }
+})
 
 $("#design option").each((index, element) => {
     if(index === 0){
@@ -96,5 +103,35 @@ $(".activities").on('change', (e) => {
             $(element).prop('disabled', false);
         }
     });
+})
 
+//credit card section starts from here
+
+
+$("#payment option").each((index, element) => {
+    if(index === 0){
+        $(element).hide();
+    }
+})
+
+$("#payment")[0].options[1].selected = true;
+$("#credit-card").show();
+$("#credit-card").next().hide();
+$("#credit-card").next().next().hide();
+
+$("#payment").on("change", (e) => {
+    console.log(e.target.value);
+    if(e.target.value === "credit card"){
+        $("#credit-card").show();
+        $("#credit-card").next().hide();
+        $("#credit-card").next().next().hide();
+    } else if(e.target.value === "paypal"){
+        $("#credit-card").next().show();
+        $("#credit-card").hide();
+        $("#credit-card").next().next().hide();
+    } else {
+        $("#credit-card").hide();
+        $("#credit-card").next().hide();
+        $("#credit-card").next().next().show();
+    }
 })
