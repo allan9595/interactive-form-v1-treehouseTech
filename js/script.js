@@ -148,8 +148,8 @@ const emailValidate = (email) => {
     return /^[^@]+@[^@.]+\.[a-z]+$/i.test(email);
 }
 
-const creditValidate = (cardNumber) => {
-
+const cardNumberValidate = (cardNumber) => {
+    return /^[0-9]{13,16}$/.test(cardNumber);
 }
 
 const zipValidate = () => {
@@ -173,7 +173,7 @@ $("form").submit((event) => {
         }
     } else {
         $("#name").css("border","none");
-        $(".nameWarning").hide();
+        $(".nameWarning").remove();
     }
     //validate email inpput field
     const emailValue = $("#mail").val();
@@ -186,7 +186,7 @@ $("form").submit((event) => {
         } 
     } else {
         $("#mail").css("border","none");
-        $(".mailWarning").hide();
+        $(".mailWarning").remove();
     }
 
     //checkbox validation part starts from here
@@ -202,7 +202,33 @@ $("form").submit((event) => {
             $(".activities").after("<p class='activitiesWarning' style='color:red'>You must at least select one activity</p>");
         } 
     } else {
-        $(".activitiesWarning").hide();
+        $(".activitiesWarning").remove();
+        countInput = 0
     }
+
+    //credit card validation starts from here
+    
+    if($("#payment").val() === "credit card"){
+        //credit card number validation part
+        const cardNumber = $("#cc-num").val();
+        const cardNumberResult = cardNumberValidate(cardNumber);
+        if(!cardNumberResult){
+            event.preventDefault();
+            $("#cc-num").css("border","2px solid red");
+            if(!$(".cardNumberWarning").length){
+                $("#cc-num").after("<p class='cardNumberWarning' style='color:red'>Invalid credit card number</p>");
+            } 
+        } else {
+            $("#cc-num").css("border","none");
+            $(".cardNumberWarning").remove();
+        }
+
+        //cvv validation 
+
+
+    }
+
+
+    
     
 })
