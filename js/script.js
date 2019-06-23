@@ -2,34 +2,34 @@ let costTotal = 0;
 const totalCost = "<p class='totalCost'>Total: $0</p>";
 let lengthCheckedOld = 0;
 let countInput = 0;
-$("#name").focus();
-$("#other-title").hide();
+
+$("#name").focus(); //focus the name field when the page load
+$("#other-title").hide(); //hide the other field when the page load
 $("#title").change((e) => {
     if(e.target.value === "other"){
-        $("#other-title").show();
+        $("#other-title").show(); //when the user select the other , show the other field
     } else {
-        $("#other-title").hide();
+        $("#other-title").hide(); //otherwise hide it
     }
 })
 
 $("#design option").each((index, element) => {
     if(index === 0){
-        $(element).hide(); //hide the select element from the menu
+        $(element).hide(); //hide the select element from the menu by default
     }
 })
 
 
-$("#color").prepend('<option value="default">Please select a T-shirt theme</option>');
+$("#color").prepend('<option value="default">Please select a T-shirt theme</option>'); //prepend the element in the select color list
 
 $("#color")[0].options[0].selected = true; //set the default selected value, inspired from https://stackoverflow.com/questions/7109120/add-blank-option-to-top-of-select-and-make-it-the-selected-option-in-ie
 
 $("#color option").each((index, element) => {
     if(index !== 0){
-        $(element).hide(); //hide all the elements except the first one
+        $(element).hide(); //hide all the elements except the first one, so the user will have to select a theme first in order to see matched colors
     } 
 })
 
-//basic version need enhancement 
 
 if($("#design").val() === "Select Theme"){
     $("#colors-js-puns").hide();//hide color until theme selected
@@ -38,6 +38,9 @@ if($("#design").val() === "Select Theme"){
 $("#design").change((e) => {
     $("#colors-js-puns").show(); //show the color selection part when the user chosen one theme
     if(e.target.value === "heart js"){
+
+        //if the selected value equal to heart js, then hide first 4 values from index, show related values
+
         $("#color option").show();
         $("#color option").each((index, element) => {
             if(index === 0 || index === 1 || index === 2 || index === 3){
@@ -48,6 +51,8 @@ $("#design").change((e) => {
     } 
 
     if(e.target.value === "js puns"){
+
+        //if the selected value equal to js puns, then hide first 4 values from index, show related values
         $("#color option").show();
         $("#color option").each((index, element) => {
             if(index === 0 || index === 4 || index === 5 || index === 6){
@@ -59,28 +64,28 @@ $("#design").change((e) => {
 });
 
 
-$(".activities").append(totalCost);
+$(".activities").append(totalCost); // append the totalCost element to the DOM
 
 
 $(".activities").on('change', (e) => {
 
     /*calculate cost of the total event vars*/
     let inputClicked = e.target;
-    //console.log(inputClicked);
-    let inputLabel = $(e.target).parent().text();
-    //console.log(inputLabel);
-    let dollarSignIndex = inputLabel.indexOf("$");
-    //console.log(dollarSignIndex);
-    let costWorkshop = inputLabel.slice(dollarSignIndex+1);
-    let costWorkshopNumber = parseFloat(costWorkshop);
+    
+    let inputLabel = $(e.target).parent().text(); //target the inputLabel text value
+    
+    let dollarSignIndex = inputLabel.indexOf("$"); //get the index of the dollar sign
+    
+    let costWorkshop = inputLabel.slice(dollarSignIndex+1); //get the actual cost of the target label
+    
+    let costWorkshopNumber = parseFloat(costWorkshop); //parse the string value into the float type 
 
-    /*disabling func vars in start from here*/
-    let dashLabel = inputLabel.indexOf("—");
-    //console.log(dashLabel);
-    let commaLabel = inputLabel.indexOf(",");
-    //console.log(commaLabel);
-    let dayTimeLabel = inputLabel.slice(dashLabel,commaLabel);
-    //console.log(dayTimeLabel);
+    let dashLabel = inputLabel.indexOf("—"); //get the index of the dash in the string
+   
+    let commaLabel = inputLabel.indexOf(","); //get the index of comma in the string
+    
+    let dayTimeLabel = inputLabel.slice(dashLabel,commaLabel); //get the time string by slice the dash and comma
+    
 
     /*
     use prop property
@@ -88,17 +93,18 @@ $(".activities").on('change', (e) => {
         credits to : subham.saha1004
     */
     if($(e.target).prop('checked') === true){ 
-        costTotal += costWorkshopNumber; 
-        //console.log(costTotal);
+
+        costTotal += costWorkshopNumber;  //if the target is checked, then add the cost value to the costTotal  
+
     } else {
-        costTotal = costTotal - costWorkshopNumber;
-        //console.log(costTotal);
+
+        costTotal = costTotal - costWorkshopNumber; //if not then substract
+
     }
-    $(".activities .totalCost").text("Total: $" + costTotal);
-    //console.log($(e.target)[0].name);
+    $(".activities .totalCost").text("Total: $" + costTotal); //concat the total cost after dollar sign
+    
     //loop through the input checks to determine which should disabled
     $(".activities input").each((index, element) => {
-        //console.log(element.name);
         if(
             ($(element).parent().text()).includes(dayTimeLabel) 
             && ((element.name) !== $(e.target)[0].name)
@@ -111,20 +117,22 @@ $(".activities").on('change', (e) => {
     });
 })
 
-//credit card section starts from here
 
+//credit card section starts from here
 
 $("#payment option").each((index, element) => {
     if(index === 0){
-        $(element).hide();
+        $(element).hide(); //by default, the select payment is hidden from the list
     }
 })
 
-$("#payment")[0].options[1].selected = true;
-$("#credit-card").show();
+$("#payment")[0].options[1].selected = true; //set the credit card as default selected
+$("#credit-card").show(); //show credit card section and hide other two sections
 $("#credit-card").next().hide();
 $("#credit-card").next().next().hide();
 
+
+//based on the selected condition, show related field
 $("#payment").on("change", (e) => {
     if(e.target.value === "credit card"){
         $("#credit-card").show();
@@ -141,6 +149,7 @@ $("#payment").on("change", (e) => {
     }
 })
 
+//the following functions are validation funcs that test each field before submitting
 const nameValidate = (name) => {
     if(name === ""){
         return false;
@@ -168,16 +177,18 @@ const cvvValidate = (cvvNumber) => {
 //adding real time listener for name field provide real time error message
 $("#name").on("keyup", (e) => {
     //validate name input field
-    const nameValue = e.target.value;
-    const nameValidateResult = nameValidate(nameValue);
+    const nameValue = e.target.value; //get the current name field value
+    const nameValidateResult = nameValidate(nameValue); //validating it
     
     if(!nameValidateResult){
-        event.preventDefault();
+        event.preventDefault(); //if not pass, then prevent submission
         $("#name").css("border","2px solid red");
         if(!$(".nameWarning").length){
+            //if this warning message not exist before, append one 
             $("#name").after("<p class='nameWarning' style='color:red'>Name field can not be blank</p>");
         }
     } else {
+        //if the condition met, remove all the warning messages
         $("#name").css("border","none");
         $(".nameWarning").remove();
     }
@@ -202,17 +213,20 @@ $("#mail").on("keyup",(e) => {
 
 $(".activities").on("change",(e) => {
     $(".activities input").each((index, element) => {
-        //console.log(element);
+        //if there is an element checked, then add the couting by 1
         if(($(element).prop('checked') === true)){
             countInput += 1;
         }
     })
     if(countInput===0){
+        //if the count is 0, means no check selected, the prevent submission
         event.preventDefault();
         if(!$(".activitiesWarning").length){
+            //if there is no message before, append on warning message
             $(".activities").after("<p class='activitiesWarning' style='color:red'>You must at least select one activity</p>");
         } 
     } else {
+        //if passed, remove the warning message, reset the count to default
         $(".activitiesWarning").remove();
         countInput = 0;
     }
@@ -221,7 +235,7 @@ $(".activities").on("change",(e) => {
 //adding real time listener for credit card  field provide real time error message
 
 if($("#payment").val() === "credit card"){
-
+    //listening to the keyup event
     $("#cc-num").on("keyup", (e) => {
         //credit card number validation part
         const cardNumber = e.target.value;
@@ -234,7 +248,7 @@ if($("#payment").val() === "credit card"){
             if(!$(".cardNumberWarning").length){
                 $("#cc-num").after("<p class='cardNumberWarning' style='color:red'>Please enter a number that is between 13 and 16 digits long.</p>");
             }
-            $(".cardNumberEmptyWarning").remove();
+            $(".cardNumberEmptyWarning").remove(); //remove the possible empty warning message
         } else if (cardNumber === ""){
             //if the card number field is empty, give a error message back
             event.preventDefault();
@@ -242,8 +256,9 @@ if($("#payment").val() === "credit card"){
             if(!$(".cardNumberEmptyWarning").length){
                 $("#cc-num").after("<p class='cardNumberEmptyWarning' style='color:red'>Please enter a credit card number.</p>");
             }
-            $(".cardNumberWarning").remove();
+            $(".cardNumberWarning").remove(); //remove possible invalid card warning
         } else {
+            //if both passed, the remove all the warning message
             $("#cc-num").css("border","none");
             $(".cardNumberWarning").remove();
             $(".cardNumberEmptyWarning").remove();
@@ -285,7 +300,7 @@ if($("#payment").val() === "credit card"){
 }    
 
 
-//form submit event listener for client side validation 
+//form submit event listener for client side validation, majority code is same as real time listener
 $("form").submit((event) => {
     //validate name input field
     const nameValue = $("#name").val();
