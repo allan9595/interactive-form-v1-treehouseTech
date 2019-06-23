@@ -31,7 +31,12 @@ $("#color option").each((index, element) => {
 
 //basic version need enhancement 
 
+if($("#design").val() === "Select Theme"){
+    $("#colors-js-puns").hide();//hide color until theme selected
+} 
+
 $("#design").change((e) => {
+    $("#colors-js-puns").show(); //show the color selection part when the user chosen one theme
     if(e.target.value === "heart js"){
         $("#color option").show();
         $("#color option").each((index, element) => {
@@ -152,13 +157,134 @@ const cardNumberValidate = (cardNumber) => {
     return /^[0-9]{13,16}$/.test(cardNumber);
 }
 
-const zipValidate = () => {
-
+const zipValidate = (zipCode) => {
+    return /^[0-9]{5}$/.test(zipCode);
 }
 
-const cvvValidate = () => {
-
+const cvvValidate = (cvvNumber) => {
+    return /^[0-9]{3}$/.test(cvvNumber);
 }
+
+//adding real time listener for name field provide real time error message
+$("#name").on("keyup", (e) => {
+    //validate name input field
+    const nameValue = e.target.value;
+    const nameValidateResult = nameValidate(nameValue);
+    
+    if(!nameValidateResult){
+        event.preventDefault();
+        $("#name").css("border","2px solid red");
+        if(!$(".nameWarning").length){
+            $("#name").after("<p class='nameWarning' style='color:red'>Name field can not be blank</p>");
+        }
+    } else {
+        $("#name").css("border","none");
+        $(".nameWarning").remove();
+    }
+})
+
+//adding real time listener for email field provide real time error message
+$("#mail").on("keyup",(e) => {
+    const emailValue = e.target.value;
+    const emailValueResult = emailValidate(emailValue);
+    if(!emailValueResult){
+        $("#mail").css("border","2px solid red");
+        if(!$(".mailWarning").length){
+            $("#mail").after("<p class='mailWarning' style='color:red'>Invalid address, email has to be in test@test.com format</p>");
+        } 
+    } else {
+        $("#mail").css("border","none");
+        $(".mailWarning").remove();
+    }
+})
+
+//adding real time listener for activities field provide real time error message
+
+$(".activities").on("change",(e) => {
+    $(".activities input").each((index, element) => {
+        //console.log(element);
+        if(($(element).prop('checked') === true)){
+            countInput += 1;
+        }
+    })
+    if(countInput===0){
+        event.preventDefault();
+        if(!$(".activitiesWarning").length){
+            $(".activities").after("<p class='activitiesWarning' style='color:red'>You must at least select one activity</p>");
+        } 
+    } else {
+        $(".activitiesWarning").remove();
+        countInput = 0;
+    }
+})
+
+//adding real time listener for credit card  field provide real time error message
+
+if($("#payment").val() === "credit card"){
+
+    $("#cc-num").on("keyup", (e) => {
+        //credit card number validation part
+        const cardNumber = e.target.value;
+        const cardNumberResult = cardNumberValidate(cardNumber);
+        
+        if(!cardNumberResult && cardNumber !== ""){
+            //if the card number field is not empty but does not meet requirments, give an error back
+            event.preventDefault();
+            $("#cc-num").css("border","2px solid red");
+            if(!$(".cardNumberWarning").length){
+                $("#cc-num").after("<p class='cardNumberWarning' style='color:red'>Please enter a number that is between 13 and 16 digits long.</p>");
+            }
+            $(".cardNumberEmptyWarning").remove();
+        } else if (cardNumber === ""){
+            //if the card number field is empty, give a error message back
+            event.preventDefault();
+            $("#cc-num").css("border","2px solid red");
+            if(!$(".cardNumberEmptyWarning").length){
+                $("#cc-num").after("<p class='cardNumberEmptyWarning' style='color:red'>Please enter a credit card number.</p>");
+            }
+            $(".cardNumberWarning").remove();
+        } else {
+            $("#cc-num").css("border","none");
+            $(".cardNumberWarning").remove();
+            $(".cardNumberEmptyWarning").remove();
+        }
+    })
+
+    $("#cvv").on("keyup",(e) => {
+        //cvv validation 
+        const cvvNumber = e.target.value;
+        const cvvNumberResult = cvvValidate(cvvNumber);
+        if(!cvvNumberResult){
+            event.preventDefault();
+            $("#cvv").css("border","2px solid red");
+            if(!$(".cvvNumberWarning").length){
+                $("#cvv").after("<p class='cvvNumberWarning' style='color:red'>Invalid cvv number, must be 3 digits numbers</p>");
+            } 
+        } else {
+            $("#cvv").css("border","none");
+            $(".cvvNumberWarning").remove();
+        }
+    })
+    
+    $("#zip").on("keyup",(e) => {
+        //zip code validation
+        const zipNumber = e.target.value;
+        const zipNumberResult = zipValidate(zipNumber);
+        if(!zipNumberResult){
+            event.preventDefault();
+            $("#zip").css("border","2px solid red");
+            if(!$(".zipNumberWarning").length){
+                $("#zip").after("<p class='zipNumberWarning' style='color:red'>Invalid zip code, must be 5 digits numbers</p>");
+            } 
+        } else {
+            $("#zip").css("border","none");
+            $(".zipNumberWarning").remove();
+        }
+    })
+    
+}    
+
+
 //form submit event listener for client side validation 
 $("form").submit((event) => {
     //validate name input field
@@ -203,7 +329,7 @@ $("form").submit((event) => {
         } 
     } else {
         $(".activitiesWarning").remove();
-        countInput = 0
+        countInput = 0;
     }
 
     //credit card validation starts from here
@@ -212,23 +338,53 @@ $("form").submit((event) => {
         //credit card number validation part
         const cardNumber = $("#cc-num").val();
         const cardNumberResult = cardNumberValidate(cardNumber);
-        if(!cardNumberResult){
+        
+        if(!cardNumberResult && cardNumber !== ""){
+            //if the card number field is not empty but does not meet requirments, give an error back
             event.preventDefault();
             $("#cc-num").css("border","2px solid red");
             if(!$(".cardNumberWarning").length){
-                $("#cc-num").after("<p class='cardNumberWarning' style='color:red'>Invalid credit card number</p>");
-            } 
+                $("#cc-num").after("<p class='cardNumberWarning' style='color:red'>Please enter a number that is between 13 and 16 digits long.</p>");
+            }
+        } else if (cardNumber === ""){
+            //if the card number field is empty, give a error message back
+            event.preventDefault();
+            $("#cc-num").css("border","2px solid red");
+            if(!$(".cardNumberEmptyWarning").length){
+                $("#cc-num").after("<p class='cardNumberEmptyWarning' style='color:red'>Please enter a credit card number.</p>");
+            }
         } else {
             $("#cc-num").css("border","none");
             $(".cardNumberWarning").remove();
+            $(".cardNumberEmptyWarning").remove();
         }
 
         //cvv validation 
+        const cvvNumber = $("#cvv").val();
+        const cvvNumberResult = cvvValidate(cvvNumber);
+        if(!cvvNumberResult){
+            event.preventDefault();
+            $("#cvv").css("border","2px solid red");
+            if(!$(".cvvNumberWarning").length){
+                $("#cvv").after("<p class='cvvNumberWarning' style='color:red'>Invalid cvv number, must be 3 digits numbers</p>");
+            } 
+        } else {
+            $("#cvv").css("border","none");
+            $(".cvvNumberWarning").remove();
+        }
 
-
-    }
-
-
-    
-    
+        //zip code validation
+        const zipNumber = $("#zip").val();
+        const zipNumberResult = zipValidate(zipNumber);
+        if(!zipNumberResult){
+            event.preventDefault();
+            $("#zip").css("border","2px solid red");
+            if(!$(".zipNumberWarning").length){
+                $("#zip").after("<p class='zipNumberWarning' style='color:red'>Invalid zip code, must be 5 digits numbers</p>");
+            } 
+        } else {
+            $("#zip").css("border","none");
+            $(".zipNumberWarning").remove();
+        }
+    }    
 })
