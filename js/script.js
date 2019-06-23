@@ -1,6 +1,7 @@
 let costTotal = 0;
 const totalCost = "<p class='totalCost'>Total: $0</p>";
 let lengthCheckedOld = 0;
+let countInput = 0;
 $("#name").focus();
 $("#other-title").hide();
 $("#title").change((e) => {
@@ -60,21 +61,21 @@ $(".activities").on('change', (e) => {
 
     /*calculate cost of the total event vars*/
     let inputClicked = e.target;
-    console.log(inputClicked);
+    //console.log(inputClicked);
     let inputLabel = $(e.target).parent().text();
-    console.log(inputLabel);
+    //console.log(inputLabel);
     let dollarSignIndex = inputLabel.indexOf("$");
-    console.log(dollarSignIndex);
+    //console.log(dollarSignIndex);
     let costWorkshop = inputLabel.slice(dollarSignIndex+1);
     let costWorkshopNumber = parseFloat(costWorkshop);
 
     /*disabling func vars in start from here*/
     let dashLabel = inputLabel.indexOf("—");
-    console.log(dashLabel);
+    //console.log(dashLabel);
     let commaLabel = inputLabel.indexOf(",");
-    console.log(commaLabel);
+    //console.log(commaLabel);
     let dayTimeLabel = inputLabel.slice(dashLabel,commaLabel);
-    console.log(dayTimeLabel);
+    //console.log(dayTimeLabel);
 
     /*
     use prop property
@@ -83,16 +84,16 @@ $(".activities").on('change', (e) => {
     */
     if($(e.target).prop('checked') === true){ 
         costTotal += costWorkshopNumber; 
-        console.log(costTotal);
+        //console.log(costTotal);
     } else {
         costTotal = costTotal - costWorkshopNumber;
-        console.log(costTotal);
+        //console.log(costTotal);
     }
     $(".activities .totalCost").text("Total: $" + costTotal);
-    console.log($(e.target)[0].name);
+    //console.log($(e.target)[0].name);
     //loop through the input checks to determine which should disabled
     $(".activities input").each((index, element) => {
-        console.log(element.name);
+        //console.log(element.name);
         if(
             ($(element).parent().text()).includes(dayTimeLabel) 
             && ((element.name) !== $(e.target)[0].name)
@@ -120,7 +121,6 @@ $("#credit-card").next().hide();
 $("#credit-card").next().next().hide();
 
 $("#payment").on("change", (e) => {
-    console.log(e.target.value);
     if(e.target.value === "credit card"){
         $("#credit-card").show();
         $("#credit-card").next().hide();
@@ -134,4 +134,75 @@ $("#payment").on("change", (e) => {
         $("#credit-card").next().hide();
         $("#credit-card").next().next().show();
     }
+})
+
+const nameValidate = (name) => {
+    if(name === ""){
+        return false;
+    } else {
+        return true;
+    }
+}
+
+const emailValidate = (email) => {
+    return /^[^@]+@[^@.]+\.[a-z]+$/i.test(email);
+}
+
+const creditValidate = (cardNumber) => {
+
+}
+
+const zipValidate = () => {
+
+}
+
+const cvvValidate = () => {
+
+}
+//form submit event listener for client side validation 
+$("form").submit((event) => {
+    //validate name input field
+    const nameValue = $("#name").val();
+    const nameValidateResult = nameValidate(nameValue);
+    
+    if(!nameValidateResult){
+        event.preventDefault();
+        $("#name").css("border","2px solid red");
+        if(!$(".nameWarning").length){
+            $("#name").after("<p class='nameWarning' style='color:red'>Name field can not be blank</p>");
+        }
+    } else {
+        $("#name").css("border","none");
+        $(".nameWarning").hide();
+    }
+    //validate email inpput field
+    const emailValue = $("#mail").val();
+    const emailValueResult = emailValidate(emailValue);
+    if(!emailValueResult){
+        event.preventDefault();
+        $("#mail").css("border","2px solid red");
+        if(!$(".mailWarning").length){
+            $("#mail").after("<p class='mailWarning' style='color:red'>Invalid address, email has to be in test@test.com format</p>");
+        } 
+    } else {
+        $("#mail").css("border","none");
+        $(".mailWarning").hide();
+    }
+
+    //checkbox validation part starts from here
+    $(".activities input").each((index, element) => {
+        //console.log(element);
+        if(($(element).prop('checked') === true)){
+            countInput += 1;
+        }
+    })
+    if(countInput===0){
+        event.preventDefault();
+        if(!$(".activitiesWarning").length){
+            $(".activities").after("<p class='activitiesWarning' style='color:red'>You must at least select one activity</p>");
+        } 
+    } else {
+        $(".activitiesWarning").hide();
+    }
+    
 })
