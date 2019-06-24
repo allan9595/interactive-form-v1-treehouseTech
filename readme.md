@@ -1,6 +1,7 @@
 # Interactive Form
 
 **Interactive Form** 
+A client side form validation made with JQuery.
 
 ## Video Walkthrough
 
