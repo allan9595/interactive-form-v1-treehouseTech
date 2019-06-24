@@ -70,21 +70,21 @@ $(".activities").append(totalCost); // append the totalCost element to the DOM
 $(".activities").on('change', (e) => {
 
     /*calculate cost of the total event vars*/
-    let inputClicked = e.target;
+    const inputClicked = e.target;
     
-    let inputLabel = $(e.target).parent().text(); //target the inputLabel text value
+    const inputLabel = $(e.target).parent().text(); //target the inputLabel text value
     
-    let dollarSignIndex = inputLabel.indexOf("$"); //get the index of the dollar sign
+    const dollarSignIndex = inputLabel.indexOf("$"); //get the index of the dollar sign
     
-    let costWorkshop = inputLabel.slice(dollarSignIndex+1); //get the actual cost of the target label
+    const costWorkshop = inputLabel.slice(dollarSignIndex+1); //get the actual cost of the target label
     
-    let costWorkshopNumber = parseFloat(costWorkshop); //parse the string value into the float type 
+    const costWorkshopNumber = parseFloat(costWorkshop); //parse the string value into the float type 
 
-    let dashLabel = inputLabel.indexOf("—"); //get the index of the dash in the string
+    const dashLabel = inputLabel.indexOf("—"); //get the index of the dash in the string
    
-    let commaLabel = inputLabel.indexOf(","); //get the index of comma in the string
+    const commaLabel = inputLabel.indexOf(","); //get the index of comma in the string
     
-    let dayTimeLabel = inputLabel.slice(dashLabel,commaLabel); //get the time string by slice the dash and comma
+    const dayTimeLabel = inputLabel.slice(dashLabel,commaLabel); //get the time string by slice the dash and comma
     
 
     /*
@@ -111,7 +111,12 @@ $(".activities").on('change', (e) => {
             &&  $(e.target).prop('checked') === true    
         ){
             $(element).prop('disabled', true);
-        } else {
+        } 
+        if(
+            ($(element).parent().text()).includes(dayTimeLabel) && 
+            ((element.name) !== $(e.target)[0].name) && 
+            $(e.target).prop('checked') === false)
+        {
             $(element).prop('disabled', false);
         }
     });
